@@ -1,5 +1,19 @@
 <div class="container mt-5">
   <%= form_with(model: paciente, local: true) do |form| %>
+    <% if paciente.errors.any? %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">
+          <%= pluralize(paciente.errors.count, "error") %> impidió que se guardara este paciente:
+        </h4>
+        <ul class="mb-0">
+          <% paciente.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
     <div class="form-group">
       <%= form.label :rut %>
       <%= form.text_field :rut, class: "form-control" %>
@@ -50,7 +64,10 @@
 
     <div class="form-group">
       <%= form.label :estado_civil %>
-      <%= form.select :estado_civil, ['Soltero', 'Casado'], {}, class: "form-control" %>
+      <%= form.select :estado_civil,
+        ['Soltero/a', 'Casado/a', 'Viudo/a', 'Divorciado/a', 'Conviviente Civil', 'Separado/a'],
+        { prompt: 'Seleccione estado civil' },
+        class: "form-control" %>
     </div>
 
 

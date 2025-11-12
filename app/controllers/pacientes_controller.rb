@@ -3,8 +3,8 @@ class PacientesController < ApplicationController
 
   # GET /pacientes or /pacientes.json
   def index
-    if params[:apellido]
-      @pacientes = Paciente.where("apellidos LIKE ?", "%#{params[:apellido]}%")
+    if params[:apellido].present?
+      @pacientes = Paciente.where("apellidos ILIKE ?", "%#{sanitize_sql_like(params[:apellido])}%")
     else
       @pacientes = Paciente.all
     end
@@ -27,27 +27,14 @@ class PacientesController < ApplicationController
   # POST /pacientes or /pacientes.json
   def create
     @paciente = Paciente.new(paciente_params)
-  
-    existing_paciente = Paciente.find_by(rut: @paciente.rut)
-  
-    if existing_paciente
-      # Si un paciente con el mismo rut ya existe
-      respond_to do |format|
-        format.html { redirect_to existing_paciente, notice: 'Un paciente con este RUT ya existe. ¿Desea editarlo?' }
-        format.json { render :show, status: :created, location: existing_paciente }
-      end
-    else
-      # Lógica existente para crear un nuevo paciente
+
+    respond_to do |format|
       if @paciente.save
-        respond_to do |format|
-          format.html { redirect_to @paciente, notice: 'Paciente creado exitosamente.' }
-          format.json { render :show, status: :created, location: @paciente }
-        end
+        format.html { redirect_to @paciente, notice: 'Paciente creado exitosamente.' }
+        format.json { render :show, status: :created, location: @paciente }
       else
-        respond_to do |format|
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @paciente.errors, status: :unprocessable_entity }
-        end
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @paciente.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -57,7 +44,7 @@ class PacientesController < ApplicationController
   def update
     respond_to do |format|
       if @paciente.update(paciente_params)
-        format.html { redirect_to paciente_url(@paciente), notice: "Paciente was successfully updated." }
+        format.html { redirect_to paciente_url(@paciente), notice: "Paciente actualizado exitosamente." }
         format.json { render :show, status: :ok, location: @paciente }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -71,7 +58,7 @@ class PacientesController < ApplicationController
     @paciente.destroy
 
     respond_to do |format|
-      format.html { redirect_to pacientes_url, notice: "Paciente was successfully destroyed." }
+      format.html { redirect_to pacientes_url, notice: "Paciente eliminado exitosamente." }
       format.json { head :no_content }
     end
   end
