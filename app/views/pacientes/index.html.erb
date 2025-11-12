@@ -30,9 +30,9 @@
           <td><%= paciente.ciudad %></td>
           <!-- ... -->
           <td>
+            <%= link_to 'Mostrar', paciente_path(paciente), class: "btn btn-info" %>
             <%= link_to 'Editar', edit_paciente_path(paciente), class: "btn btn-warning" %>
-            <%= link_to 'Eliminar', paciente, method: :delete, data: { confirm: '¿Estás seguro?' }, class: "btn btn-danger" %>
-            <%= link_to 'Mostrar Paciente', paciente_path(paciente), class: "btn btn-info" %>
+            <%= link_to 'Eliminar', paciente, data: { turbo_method: :delete, turbo_confirm: '¿Estás seguro de eliminar este paciente?' }, class: "btn btn-danger" %>
           </td>
         </tr>
       <% end %>
